@@ -38,15 +38,19 @@ function Lazy (em) {
         );
     }
 
-    self.head = function () {
-        
+    self.head = function (f) {
+        var lazy = newLazy();
+        lazy.on('data', function g (x) {
+            f(x)
+            lazy.removeListener('data', g)
+        })
     }
 
     self.tail = function () {
-        var skip = false;
+        var skip = true;
         return newLazy(function () {
-            if (!skip) {
-                skip = true;
+            if (skip) {
+                skip = false;
                 return false;
             }
             return true;
@@ -75,7 +79,6 @@ function Lazy (em) {
             return true;
         });
         lazy.on('end', function () { f(data) });
-        return lazy;
     }
 }
 
