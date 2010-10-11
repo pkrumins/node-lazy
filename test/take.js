@@ -19,7 +19,6 @@ exports['take'] = function (assert) {
     range(0,10).forEach(function (x) {
         lazy.emit('data', x);
     });
-    lazy.emit('end');
 
     assert.equal(executed, 1, 'join executed incorrectly');
 }
