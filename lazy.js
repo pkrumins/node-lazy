@@ -38,6 +38,21 @@ function Lazy (em) {
         );
     }
 
+    self.head = function () {
+        
+    }
+
+    self.tail = function () {
+        var skip = false;
+        return newLazy(function () {
+            if (!skip) {
+                skip = true;
+                return false;
+            }
+            return true;
+        });
+    }
+
     self.take = function (n) {
         return newLazy(function () {
             return n-- > 0;
