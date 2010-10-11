@@ -72,6 +72,17 @@ function Lazy (em) {
         });
     }
 
+    self.foldr = function (op, i, f) {
+        var acc = i;
+        var lazy = newLazy();
+        lazy.on('data', function g (x) {
+            acc = op(x, acc);
+        });
+        lazy.on('end', function () {
+            f(acc);
+        });
+    }
+
     self.join = function (f) {
         var data = []
         var lazy = newLazy(function (x) {
