@@ -11,19 +11,11 @@ function Lazy (em) {
         if (!g) g = function () { return true };
         if (!h) h = function (x) { return x };
         var lazy = new Lazy;
-        self.dataListener = function (x) {
-            if (g.call(lazy, x)) lazy.emit('data', h(x))
-        }
-        self.on('data', self.dataListener);
+        self.on('data', function (x) {
+            if (g.call(lazy, x)) lazy.emit('data', h(x));
+        });
         self.on('end', function () { lazy.emit('end') });
-        lazy.prev = self;
         return lazy;
-    }
-
-    function breakChain (lazy) {
-        for (; lazy; lazy=lazy.prev) {
-            lazy.removeListener('data', lazy.dataListener);
-        }
     }
 
     self.filter = function (f) {
@@ -49,8 +41,8 @@ function Lazy (em) {
     self.head = function (f) {
         var lazy = newLazy();
         lazy.on('data', function g (x) {
-            f(x);
-            lazy.removeListener('data', g);
+            f(x)
+            lazy.removeListener('data', g)
         })
     }
 
@@ -67,11 +59,7 @@ function Lazy (em) {
 
     self.take = function (n) {
         return newLazy(function () {
-            if (n-- == 0) {
-                breakChain(this);
-                return false;
-            }
-            return true;
+            return n-- > 0;
         });
     }
 
