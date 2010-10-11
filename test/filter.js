@@ -1,5 +1,5 @@
 var Lazy = require('lazy');
-var EventEmitter = require('events').EventEmitter;
+var expresso = expresso;
 
 function range(i, j) {
     var r = [];
@@ -7,12 +7,20 @@ function range(i, j) {
     return r;
 }
 
-var lazy = new Lazy;
-lazy.filter(function(x) { return x > 5 }).map(function (x) { return x*2 }).take(2).forEach(function (x) {
-    console.log(x);
-});
+exports['filter'] = function (assert) {
+    var lazy = new Lazy;
+    var data = [];
+    var executed = false;
+    lazy.filter(function(x) { return x > 5 }).join(function (xs) {
+        assert.deepEqual(xs, [6,7,8,9]);
+        executed = true;
+    });
 
-range(0,10).forEach(function (x) {
-    lazy.emit('data', x);
-});
+    range(0,10).forEach(function (x) {
+        lazy.emit('data', x);
+    });
+    lazy.emit('end');
+
+    assert.ok(executed, 'join didn\'t execute');
+}
 
