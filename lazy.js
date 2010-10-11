@@ -6,6 +6,11 @@ module.exports = Lazy;
 function Lazy (em, opts) {
     if (!(this instanceof Lazy)) return new Lazy(em, opts);
     var self = this;
+    if (em) {
+        if (!em._events) em._events = {};
+        self._events = em._events;
+    }
+    
     if (!opts) opts = {};
     var dataName = opts.data || 'data';
     var endName = opts.end || 'end';
