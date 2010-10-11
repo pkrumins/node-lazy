@@ -7,7 +7,7 @@ function range(i, j) {
     return r;
 }
 
-exports['filter'] = function (assert) {
+exports['join'] = function (assert) {
     var lazy = new Lazy;
     var data = [];
     var executed = false;
