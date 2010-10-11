@@ -9,11 +9,10 @@ function range(i, j) {
 
 exports['complex'] = function (assert) {
     var lazy = new Lazy;
-    var executed = false;
     var data1 = [];
     var data2 = [];
     var data3 = [];
-    joinExecuted = false;
+    var joinExecuted = false;
     lazy
         .map(function (x) {
             return 2*x;
@@ -47,6 +46,6 @@ exports['complex'] = function (assert) {
     assert.deepEqual(data1, range(0,10).map(function (x) { return x*2 }));
     assert.deepEqual(data2, range(0,5));
     assert.deepEqual(data3, [0, 2, 4]);
-    assert.equal(joinExecuted);
+    assert.ok(joinExecuted);
 }
 
