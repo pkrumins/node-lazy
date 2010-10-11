@@ -14,10 +14,17 @@ function Lazy (em) {
         self.on('data', function (x) {
             if (g.call(lazy, x)) lazy.emit('data', h(x));
         });
-        self.on('end', function () { lazy.emit('end') });
+        self.once('end', function () { lazy.emit('end') });
         return lazy;
     }
-
+    
+    self.once = function (name, f) {
+        self.on(name, function g () {
+            self.removeListener(name, g);
+            f.apply(this, arguments);
+        });
+    };
+    
     self.filter = function (f) {
         return newLazy(function (x) {
             return f(x);
@@ -59,7 +66,9 @@ function Lazy (em) {
 
     self.take = function (n) {
         return newLazy(function () {
-            return n-- > 0;
+            var alive = n-- > 0;
+            if (!alive) this.emit('end');
+            return alive;
         });
     }
 
@@ -78,7 +87,7 @@ function Lazy (em) {
         lazy.on('data', function g (x) {
             acc = op(x, acc);
         });
-        lazy.on('end', function () {
+        lazy.once('end', function () {
             f(acc);
         });
     }
@@ -97,7 +106,7 @@ function Lazy (em) {
             data.push(x);
             return true;
         });
-        lazy.on('end', function () { f(data) });
+        lazy.once('end', function () { f(data) });
     }
 }
 
