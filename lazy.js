@@ -1,9 +1,10 @@
 var EventEmitter = require('events').EventEmitter;
+var Hash = require('traverse').Hash;
 
 Lazy.prototype = new EventEmitter;
 module.exports = Lazy;
-function Lazy () {
-    if (!(this instanceof Lazy)) return new Lazy([].slice.call(arguments));
+function Lazy (em) {
+    if (!(this instanceof Lazy)) return new Lazy(em);
     var self = this;
 
     function newLazy (g, h) {
@@ -13,6 +14,7 @@ function Lazy () {
         self.on('data', function (x) {
             if (g.call(lazy, x)) lazy.emit('data', h(x));
         });
+        self.on('end', function () { lazy.emit('end') });
         return lazy;
     }
 
@@ -23,8 +25,10 @@ function Lazy () {
     }
 
     self.forEach = function (f) {
-        self.on('data', f);
-        return self;
+        return newLazy(function (x) {
+            f(x);
+            return true;
+        });
     }
 
     self.map = function (f) {
@@ -38,6 +42,25 @@ function Lazy () {
         return newLazy(function () {
             return n-- > 0;
         });
+    }
+
+    self.takeWhile = function (f) {
+        var cond = true;
+        return newLazy(function (x) {
+            if (cond && f(x)) return true;
+            cond = false;
+            return false;
+        });
+    }
+
+    self.join = function (f) {
+        var data = []
+        var lazy = newLazy(function (x) {
+            data.push(x);
+            return true;
+        });
+        lazy.on('end', function () { f(data) });
+        return lazy;
     }
 }
 
