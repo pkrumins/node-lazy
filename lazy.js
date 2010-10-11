@@ -83,6 +83,14 @@ function Lazy (em) {
         });
     }
 
+    self.sum = function (f) {
+        return self.foldr(function (x, acc) { return x + acc }, 0, f);
+    }
+
+    self.product = function (f) {
+        return self.foldr(function (x, acc) { return x*acc }, 1, f);
+    }
+
     self.join = function (f) {
         var data = []
         var lazy = newLazy(function (x) {
