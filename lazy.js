@@ -3,18 +3,21 @@ var Hash = require('traverse').Hash;
 
 Lazy.prototype = new EventEmitter;
 module.exports = Lazy;
-function Lazy (em) {
-    if (!(this instanceof Lazy)) return new Lazy(em);
+function Lazy (em, opts) {
+    if (!(this instanceof Lazy)) return new Lazy(em, opts);
     var self = this;
+    if (!opts) opts = {};
+    var dataName = opts.data || 'data';
+    var endName = opts.end || 'end';
 
     function newLazy (g, h) {
         if (!g) g = function () { return true };
         if (!h) h = function (x) { return x };
         var lazy = new Lazy;
-        self.on('data', function (x) {
-            if (g.call(lazy, x)) lazy.emit('data', h(x));
+        self.on(dataName, function (x) {
+            if (g.call(lazy, x)) lazy.emit(dataName, h(x));
         });
-        self.once('end', function () { lazy.emit('end') });
+        self.once(endName, function () { lazy.emit(endName) });
         return lazy;
     }
     
@@ -23,7 +26,7 @@ function Lazy (em) {
             self.removeListener(name, g);
             f.apply(this, arguments);
         });
-    };
+    }
     
     self.filter = function (f) {
         return newLazy(function (x) {
@@ -47,9 +50,9 @@ function Lazy (em) {
 
     self.head = function (f) {
         var lazy = newLazy();
-        lazy.on('data', function g (x) {
+        lazy.on(dataName, function g (x) {
             f(x)
-            lazy.removeListener('data', g)
+            lazy.removeListener(dataName, g)
         })
     }
 
@@ -67,7 +70,7 @@ function Lazy (em) {
     self.take = function (n) {
         return newLazy(function () {
             var alive = n-- > 0;
-            if (!alive) this.emit('end');
+            if (!alive) this.emit(endName);
             return alive;
         });
     }
@@ -84,10 +87,10 @@ function Lazy (em) {
     self.foldr = function (op, i, f) {
         var acc = i;
         var lazy = newLazy();
-        lazy.on('data', function g (x) {
+        lazy.on(dataName, function g (x) {
             acc = op(x, acc);
         });
-        lazy.once('end', function () {
+        lazy.once(endName, function () {
             f(acc);
         });
     }
@@ -106,7 +109,7 @@ function Lazy (em) {
             data.push(x);
             return true;
         });
-        lazy.once('end', function () { f(data) });
+        lazy.once(endName, function () { f(data) });
     }
 }
 
