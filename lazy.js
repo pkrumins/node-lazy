@@ -22,7 +22,9 @@ function Lazy (em, opts) {
         self.on(dataName, function (x) {
             if (g.call(lazy, x)) lazy.emit(dataName, h(x));
         });
-        self.once(endName, function () { lazy.emit(endName) });
+        self.once(endName, function () {
+            lazy.emit(endName)
+        });
         return lazy;
     }
     
@@ -74,9 +76,8 @@ function Lazy (em, opts) {
 
     self.take = function (n) {
         return newLazy(function () {
-            var alive = n-- > 0;
-            if (!alive) this.emit(endName);
-            return alive;
+            if (n == 0) self.emit(endName);
+            return n-- > 0;
         });
     }
 

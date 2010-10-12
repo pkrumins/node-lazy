@@ -11,23 +11,22 @@ exports.em = function (assert) {
     var em = new EventEmitter;
     var i = 0;
     var iv = setInterval(function () {
-        em.emit('meow', i++);
+        em.emit('data', i++);
     }, 10);
     
     var caughtDone = 0;
-    em.on('all done', function () { caughtDone ++ });
+    em.on('end', function () { caughtDone ++ });
     
     var joined = 0;
-    Lazy(em, { data : 'meow', end : 'all done' })
-        .take(10).join(function (xs) {
-            assert.deepEqual(xs, range(0, 10));
-            clearInterval(iv);
-            joined ++;
-        });
+    Lazy(em).take(10).join(function (xs) {
+        assert.deepEqual(xs, range(0, 10));
+        clearInterval(iv);
+        joined ++;
+    });
     
     setTimeout(function () {
         assert.equal(joined, 1);
         assert.equal(caughtDone, 1);
-    }, 500);
+    }, 150);
 }
 
