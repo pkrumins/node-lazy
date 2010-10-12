@@ -117,6 +117,7 @@ function Lazy (em, opts) {
             return true;
         });
         lazy.once(endName, function () { f(data) });
+        return self;
     }
 }
 
