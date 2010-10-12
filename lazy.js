@@ -86,6 +86,7 @@ function Lazy (em, opts) {
         return newLazy(function (x) {
             if (cond && f(x)) return true;
             cond = false;
+            self.emit('end');
             return false;
         });
     }
