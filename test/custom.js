@@ -8,7 +8,7 @@ function range(i, j) {
 }
 
 exports['custom event names'] = function (assert) {
-    var lazy = new Lazy(null, { data : 'meow', end : 'all done' });
+    var lazy = new Lazy(null, { data : 'meow', pipe : 'all done' });
     var data = [];
     var executed = false;
     lazy.take(10).join(function (xs) {

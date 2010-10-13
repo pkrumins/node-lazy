@@ -15,7 +15,7 @@ exports.em = function (assert) {
     }, 10);
     
     var caughtDone = 0;
-    em.on('end', function () { caughtDone ++ });
+    em.on('pipe', function () { caughtDone ++ });
     
     var joined = 0;
     Lazy(em).take(10).join(function (xs) {
