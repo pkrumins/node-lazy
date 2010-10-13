@@ -32,6 +32,6 @@ exports.pipe = function (assert) {
         assert.equal(joined, 1);
         assert.equal(caught.pipe, 1);
         assert.equal(caught.end, 1);
-    }, 200);
+    }, 500);
 }
 
