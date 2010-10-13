@@ -11,10 +11,24 @@ function Lazy (em, opts) {
         self._events = em._events;
     }
     
+    self.once = function (name, f) {
+        self.on(name, function g () {
+            self.removeListener(name, g);
+            f.apply(this, arguments);
+        });
+    }
+    
     if (!opts) opts = {};
     var dataName = opts.data || 'data';
-    var endName = opts.end || 'end';
-
+    var pipeName = opts.pipe || 'pipe';
+    var endName = opts.pipe || 'end';
+     
+    if (pipeName != endName) {
+        var f = self.emit.bind(self, pipeName);
+        self.once(endName, f);
+        self.once(pipeName, self.removeListener.bind(self, endName, f));
+    }
+    
     function newLazy (g, h) {
         if (!g) g = function () { return true };
         if (!h) h = function (x) { return x };
@@ -22,17 +36,10 @@ function Lazy (em, opts) {
         self.on(dataName, function (x) {
             if (g.call(lazy, x)) lazy.emit(dataName, h(x));
         });
-        self.once(endName, function () {
-            lazy.emit(endName)
+        self.once(pipeName, function () {
+            lazy.emit(pipeName)
         });
         return lazy;
-    }
-    
-    self.once = function (name, f) {
-        self.on(name, function g () {
-            self.removeListener(name, g);
-            f.apply(this, arguments);
-        });
     }
     
     self.filter = function (f) {
@@ -76,7 +83,7 @@ function Lazy (em, opts) {
 
     self.take = function (n) {
         return newLazy(function () {
-            if (n == 0) self.emit(endName);
+            if (n == 0) self.emit(pipeName);
             return n-- > 0;
         });
     }
@@ -86,7 +93,7 @@ function Lazy (em, opts) {
         return newLazy(function (x) {
             if (cond && f(x)) return true;
             cond = false;
-            self.emit('end');
+            self.emit(pipeName);
             return false;
         });
     }
@@ -97,7 +104,7 @@ function Lazy (em, opts) {
         lazy.on(dataName, function g (x) {
             acc = op(x, acc);
         });
-        lazy.once(endName, function () {
+        lazy.once(pipeName, function () {
             f(acc);
         });
     }
@@ -116,7 +123,7 @@ function Lazy (em, opts) {
             data.push(x);
             return true;
         });
-        lazy.once(endName, function () { f(data) });
+        lazy.once(pipeName, function () { f(data) });
         return self;
     }
 }

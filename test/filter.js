@@ -19,7 +19,7 @@ exports['filter'] = function (assert) {
     range(0,10).forEach(function (x) {
         lazy.emit('data', x);
     });
-    lazy.emit('end');
+    lazy.emit('pipe');
 
     assert.ok(executed, 'join didn\'t execute');
 }
