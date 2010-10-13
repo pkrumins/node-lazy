@@ -22,11 +22,13 @@ function Lazy (em, opts) {
     var dataName = opts.data || 'data';
     var pipeName = opts.pipe || 'pipe';
     var endName = opts.pipe || 'end';
-     
+    
     if (pipeName != endName) {
-        var f = self.emit.bind(self, pipeName);
-        self.once(endName, f);
-        self.once(pipeName, self.removeListener.bind(self, endName, f));
+        var piped = false;
+        self.once(pipeName, function () { piped = true });
+        self.once(endName, function () {
+            if (!piped) self.emit('pipe');
+        });
     }
     
     function newLazy (g, h) {

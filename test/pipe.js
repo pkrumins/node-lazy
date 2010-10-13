@@ -30,7 +30,6 @@ exports.pipe = function (assert) {
     
     setTimeout(function () {
         assert.equal(joined, 1);
-        console.dir(caught);
         assert.equal(caught.pipe, 1);
         assert.equal(caught.end, 1);
     }, 200);
