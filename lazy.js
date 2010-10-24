@@ -1,5 +1,4 @@
 var EventEmitter = require('events').EventEmitter;
-var Hash = require('traverse').Hash;
 
 Lazy.prototype = new EventEmitter;
 module.exports = Lazy;
@@ -27,7 +26,7 @@ function Lazy (em, opts) {
         var piped = false;
         self.once(pipeName, function () { piped = true });
         self.once(endName, function () {
-            if (!piped) self.emit('pipe');
+            if (!piped) self.emit(pipeName);
         });
     }
     
