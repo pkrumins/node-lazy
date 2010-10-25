@@ -30,6 +30,14 @@ function Lazy (em, opts) {
         });
     }
     
+    self.push = function (x) {
+        self.emit(dataName, x);
+    }
+    
+    self.end = function () {
+        self.emit(endName);
+    }
+    
     function newLazy (g, h) {
         if (!g) g = function () { return true };
         if (!h) h = function (x) { return x };
@@ -127,6 +135,47 @@ function Lazy (em, opts) {
         lazy.once(pipeName, function () { f(data) });
         return self;
     }
+ 
+    self.bucket = function (init, f) {
+        var lazy = new Lazy(null, opts);
+        var yield = function (x) {
+            lazy.emit(dataName, x);
+        };
+        
+        var acc = init;
+        
+        self.on(dataName, function (x) {
+            acc = f.call(yield, acc, x);
+        });
+        
+        self.once(pipeName, function () {
+            lazy.emit(pipeName)
+        });
+        
+        return lazy;
+    }
+    
+    // Streams that use this should emit strings or buffers only
+    self.__defineGetter__('lines', function () {
+        return self.bucket(new Buffer(0), function (acc, x) {
+            if (typeof x == 'string') x = new Buffer(x);
+            
+            var accx = new Buffer(acc.length + x.length);
+            acc.copy(accx, 0);
+            x.copy(accx, acc.length);
+            
+            var newline = '\n'.charCodeAt(0);
+            var j = 0;
+            for (var i = 0; i < accx.length; i++) {
+                if (accx[i] == newline) {
+                    this(accx.slice(j, i));
+                    j = i + 1;
+                }
+            }
+            
+            return accx.slice(j, accx.length);
+        });
+    });
 }
 
 Lazy.range = function () {
