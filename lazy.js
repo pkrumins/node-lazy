@@ -45,17 +45,29 @@ function Lazy (em, opts) {
 
     self.range = function () {
         var args = arguments;
-        if (args.length == 2 || args.length == 3) {
-            var i = args[0], j = args[1];
-            var step = 1;
+        var step = 1;
+        if (args.length == 1) { // 'start..end'
+            var parts = args[0].split('..');
+            if (parts.length == 1) { // 'start..'
+                var i = parts[0], j = parts[0]-1;
+            }
+            else { // 'start..end'
+                var i = parts[0], j = parts[1];
+            }
+            i = parseInt(i, 10);
+            j = parseInt(j, 10);
         }
-        if (args.length == 3) {
-            var step = args[2];
+        else if (args.length == 2 || args.length == 3) { // start, end[, step]
+            var i = args[0], j = args[1];
+            if (args.length == 3) {
+                var step = args[2];
+            }
         }
         var lazy = newLazy();
         process.nextTick(function () {
-            for (; i<j; i+=step)
+            for (; i<j; i+=step) {
                 lazy.emit(dataName, i)
+            }
             lazy.emit(endName);
         });
         return lazy;
