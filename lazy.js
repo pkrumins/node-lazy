@@ -65,8 +65,15 @@ function Lazy (em, opts) {
         }
         var lazy = newLazy();
         process.nextTick(function () {
-            for (; i<j; i+=step) {
-                lazy.emit(dataName, i)
+            if (i < j) {
+                for (; i<j; i+=step) {
+                    lazy.emit(dataName, i)
+                }
+            }
+            else {
+                for (; i>j; i-=step) {
+                    lazy.emit(dataName, i)
+                }
             }
             lazy.emit(endName);
         });
