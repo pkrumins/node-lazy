@@ -42,6 +42,24 @@ function Lazy (em, opts) {
         });
         return lazy;
     }
+
+    self.range = function () {
+        var args = arguments;
+        if (args.length == 2 || args.length == 3) {
+            var i = args[0], j = args[1];
+            var step = 1;
+        }
+        if (args.length == 3) {
+            var step = args[2];
+        }
+        var lazy = newLazy();
+        process.nextTick(function () {
+            for (; i<j; i+=step)
+                lazy.emit(dataName, i)
+            lazy.emit(endName);
+        });
+        return lazy;
+    }
     
     self.filter = function (f) {
         return newLazy(function (x) {
