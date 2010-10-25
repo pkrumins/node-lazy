@@ -132,17 +132,20 @@ function Lazy (em, opts) {
 Lazy.range = function () {
     var args = arguments;
     var step = 1;
-    if (args.length == 1) { // 'start..[next..]end'
+    if (args.length == 1) { // 'start[,next]..[end]'
         var parts = args[0].split('..');
-        if (parts.length == 3) { // 'start..next..end'
-            var i = parts[0], j = parts[2];
-            step = Math.abs(parts[1]-i);
-        }
-        else if (parts.length == 2) { // 'start..end'
-            var i = parts[0], j = parts[1];
-        }
-        else if (parts.length == 1) { // 'start..'
+        if (parts.length == 1) { // 'start..'
             var i = parts[0], j = parts[0]-1;
+        }
+        else if (parts.length == 2) { // 'start[,next]..end'
+            var progression = parts[0].split(',');
+            if (progression.length == 1) { // start..end
+                var i = parts[0], j = parts[1];
+            }
+            else { // 'start,next..end'
+                var i = progression[0], j = parts[1];
+                step = Math.abs(progression[1]-i);
+            }
         }
         else {
             throw new Error("single argument range takes 'start..end' or 'start..next..end'");
