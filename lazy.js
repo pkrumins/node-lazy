@@ -30,6 +30,14 @@ function Lazy (em, opts) {
         });
     }
     
+    self.push = function (x) {
+        self.emit(dataName, x);
+    }
+    
+    self.end = function () {
+        self.emit(endName);
+    }
+    
     function newLazy (g, h) {
         if (!g) g = function () { return true };
         if (!h) h = function (x) { return x };

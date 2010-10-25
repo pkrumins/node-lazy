@@ -19,11 +19,11 @@ exports['buffered lines'] = function (assert) {
     ;
     
     setTimeout(function () {
-        lazy.emit('data', new Buffer('foo\nbar'));
-        lazy.emit('data', new Buffer('\nbaz\nquux\nmoo'));
-        lazy.emit('data', new Buffer(''));
-        lazy.emit('data', new Buffer('\ndoom'));
-        lazy.emit('end');
+        lazy.push(new Buffer('foo\nbar'));
+        lazy.push(new Buffer('\nbaz\nquux\nmoo'));
+        lazy.push(new Buffer(''));
+        lazy.push(new Buffer('\ndoom'));
+        lazy.end();
         assert.ok(joined);
     }, 50);
 };
@@ -47,11 +47,11 @@ exports['string lines'] = function (assert) {
     ;
     
     setTimeout(function () {
-        lazy.emit('data', 'foo\nbar');
-        lazy.emit('data', '\nbaz\nquux\nmoo');
-        lazy.emit('data', '');
-        lazy.emit('data', '\ndoom');
-        lazy.emit('end');
+        lazy.push('foo\nbar');
+        lazy.push('\nbaz\nquux\nmoo');
+        lazy.push('');
+        lazy.push('\ndoom');
+        lazy.end();
         assert.ok(joined);
     }, 50);
 };
