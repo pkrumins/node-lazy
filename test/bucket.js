@@ -4,7 +4,7 @@ exports.bucket = function (assert) {
     var joined = false;
     var lazy = new Lazy;
     lazy.bucket('', function splitter (acc, x) {
-        var accx = acc + x
+        var accx = acc + x;
         var i = accx.indexOf('\n');
         if (i >= 0) {
             this(accx.slice(0, i));
