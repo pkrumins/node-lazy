@@ -148,7 +148,7 @@ Lazy.range = function () {
             }
         }
         else {
-            throw new Error("single argument range takes 'start..end' or 'start..next..end'");
+            throw new Error("single argument range takes 'start..end' or 'start,next..end'");
         }
         i = parseInt(i, 10);
         j = parseInt(j, 10);
