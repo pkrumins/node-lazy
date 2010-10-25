@@ -132,13 +132,20 @@ function Lazy (em, opts) {
 Lazy.range = function () {
     var args = arguments;
     var step = 1;
-    if (args.length == 1) { // 'start..end'
+    if (args.length == 1) { // 'start..[next..]end'
         var parts = args[0].split('..');
-        if (parts.length == 1) { // 'start..'
+        if (parts.length == 3) { // 'start..next..end'
+            var i = parts[0], j = parts[2];
+            step = Math.abs(parts[1]-i);
+        }
+        else if (parts.length == 2) { // 'start..end'
+            var i = parts[0], j = parts[1];
+        }
+        else if (parts.length == 1) { // 'start..'
             var i = parts[0], j = parts[0]-1;
         }
-        else { // 'start..end'
-            var i = parts[0], j = parts[1];
+        else {
+            throw new Error("single argument range takes 'start..end' or 'start..next..end'");
         }
         i = parseInt(i, 10);
         j = parseInt(j, 10);
@@ -148,6 +155,9 @@ Lazy.range = function () {
         if (args.length == 3) {
             var step = args[2];
         }
+    }
+    else {
+        throw new Error("range takes 1, 2 or 3 arguments");
     }
     var lazy = new Lazy;
     process.nextTick(function () {
