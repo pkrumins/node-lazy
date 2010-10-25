@@ -164,5 +164,24 @@ function Lazy (em, opts) {
         lazy.once(pipeName, function () { f(data) });
         return self;
     }
+ 
+    self.bucket = function (init, f) {
+        var lazy = new Lazy(null, opts);
+        var yield = function (x) {
+            lazy.emit(dataName, x);
+        };
+        
+        var acc = init;
+        
+        self.on(dataName, function (x) {
+            acc = f.call(yield, acc, x);
+        });
+        
+        self.once(pipeName, function () {
+            lazy.emit(pipeName)
+        });
+        
+        return lazy;
+    }
 }
 
