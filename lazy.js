@@ -181,6 +181,7 @@ function Lazy (em, opts) {
 Lazy.range = function () {
     var args = arguments;
     var step = 1;
+    var infinite = false;
 
     if (args.length == 1 && typeof args[0] == 'number') {
         var i = 0, j = args[0];
@@ -195,10 +196,14 @@ Lazy.range = function () {
         if (arg.slice(-1) == ']') endClosed = true;
 
         var parts = arg.split('..');
-        if (parts.length == 1) { // 'start..'
-            var i = parts[0], j = parts[0]-1;
+        if (parts.length != 2)
+            throw new Error("single argument range takes 'start..end' or 'start,next..end'");
+
+        if (parts[1] == '') { // 'start..'
+            var i = parts[0];
+            infinite = true;
         }
-        else if (parts.length == 2) { // 'start[,next]..end'
+        else { // 'start[,next]..end'
             var progression = parts[0].split(',');
             if (progression.length == 1) { // start..end
                 var i = parts[0], j = parts[1];
@@ -207,9 +212,6 @@ Lazy.range = function () {
                 var i = progression[0], j = parts[1];
                 step = Math.abs(progression[1]-i);
             }
-        }
-        else {
-            throw new Error("single argument range takes 'start..end' or 'start,next..end'");
         }
 
         i = parseInt(i, 10);
@@ -235,19 +237,35 @@ Lazy.range = function () {
         throw new Error("range takes 1, 2 or 3 arguments");
     }
     var lazy = new Lazy;
-    process.nextTick(function () {
-        if (i < j) {
-            for (; i<j; i+=step) {
-                lazy.emit('data', i)
-            }
-        }
-        else {
-            for (; i>j; i-=step) {
-                lazy.emit('data', i)
-            }
-        }
-        lazy.emit('end');
+    var stopInfinite = false;
+    lazy.on('pipe', function () {
+        stopInfinite = true;
     });
+    if (infinite) {
+        process.nextTick(function g () {
+            if (stopInfinite) { 
+                clearInterval(g);
+                return;
+            }
+            lazy.emit('data', i++);
+            process.nextTick(g);
+        });
+    }
+    else {
+        process.nextTick(function () {
+            if (i < j) {
+                for (; i<j; i+=step) {
+                    lazy.emit('data', i)
+                }
+            }
+            else {
+                for (; i>j; i-=step) {
+                    lazy.emit('data', i)
+                }
+            }
+            lazy.emit('end');
+        });
+    }
     return lazy;
 }
 
