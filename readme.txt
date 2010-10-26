@@ -104,8 +104,15 @@ This is so much nicer!
 
 [2]-Documentation-------------------------------------------------------------
 
-Coming soon.
+Supports the following operations:
 
+    * lazy.filter(f)
+    * lazy.forEach(f)
+    * lazy.map(f)
+    * lazy.take(n)
+    * lazy.takeWhile(f)
+    * lazy.bucket(init, f)
+    * lazy.lines
 
 ------------------------------------------------------------------------------
 
