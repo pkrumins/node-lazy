@@ -27,6 +27,6 @@ exports.em = function (assert) {
     setTimeout(function () {
         assert.equal(joined, 1);
         assert.equal(caughtDone, 1);
-    }, 150);
+    }, 500);
 }
 
