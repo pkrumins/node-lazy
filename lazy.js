@@ -197,7 +197,7 @@ Lazy.range = function () {
 
         var parts = arg.split('..');
         if (parts.length != 2)
-            throw new Error("single argument range takes 'start..end' or 'start,next..end'");
+            throw new Error("single argument range takes 'start..' or 'start..end' or 'start,next..end'");
 
         if (parts[1] == '') { // 'start..'
             var i = parts[0];

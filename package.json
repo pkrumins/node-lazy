@@ -1,6 +1,6 @@
 {
     "name": "lazy",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Lazy lists for node",
     "modules" : {
         "index" : "./lazy.js"
