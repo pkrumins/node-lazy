@@ -9,6 +9,19 @@ function range(i, j, s) {
     return r;
 }
 
+exports['infinite range'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('10..').take(10).join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(10, 20));
+        assert.equal(xs.length, 10);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
 exports['range i'] = function (assert) {
     var joinExecuted = false;
     Lazy.range(10).join(function (xs) {
