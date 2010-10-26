@@ -218,7 +218,7 @@ Lazy.range = function () {
         j = parseInt(j, 10);
 
         if (startOpen) {
-            if (i < j) i++;
+            if (infinite || i < j) i++;
             else i--;
         }
 
@@ -243,10 +243,7 @@ Lazy.range = function () {
     });
     if (infinite) {
         process.nextTick(function g () {
-            if (stopInfinite) { 
-                clearInterval(g);
-                return;
-            }
+            if (stopInfinite) return;
             lazy.emit('data', i++);
             process.nextTick(g);
         });
