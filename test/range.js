@@ -22,6 +22,19 @@ exports['infinite range'] = function (assert) {
     }, 2000);
 }
 
+exports['infinite range half-open'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('(10..').take(10).join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(11, 21));
+        assert.equal(xs.length, 10);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
 exports['range i'] = function (assert) {
     var joinExecuted = false;
     Lazy.range(10).join(function (xs) {
