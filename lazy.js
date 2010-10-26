@@ -181,8 +181,20 @@ function Lazy (em, opts) {
 Lazy.range = function () {
     var args = arguments;
     var step = 1;
-    if (args.length == 1) { // 'start[,next]..[end]'
-        var parts = args[0].split('..');
+
+    if (args.length == 1 && typeof args[0] == 'number') {
+        var i = 0, j = args[0];
+    }
+    else if (args.length == 1 && typeof args[0] == 'string') { // 'start[,next]..[end]'
+        var arg = args[0];
+        var startOpen = false, endClosed = false;
+        if (arg[0] == '(' || arg[0] == '[') {
+            if (arg[0] == '(') startOpen = true;
+            arg = arg.slice(1);
+        }
+        if (arg.slice(-1) == ']') endClosed = true;
+
+        var parts = arg.split('..');
         if (parts.length == 1) { // 'start..'
             var i = parts[0], j = parts[0]-1;
         }
@@ -199,8 +211,19 @@ Lazy.range = function () {
         else {
             throw new Error("single argument range takes 'start..end' or 'start,next..end'");
         }
+
         i = parseInt(i, 10);
         j = parseInt(j, 10);
+
+        if (startOpen) {
+            if (i < j) i++;
+            else i--;
+        }
+
+        if (endClosed) {
+            if (i < j) j++;
+            else j--;
+        }
     }
     else if (args.length == 2 || args.length == 3) { // start, end[, step]
         var i = args[0], j = args[1];

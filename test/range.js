@@ -9,6 +9,19 @@ function range(i, j, s) {
     return r;
 }
 
+exports['range i'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range(10).join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(0, 10));
+        assert.equal(xs.length, 10);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
 exports['range i,j (i<j)'] = function (assert) {
     var joinExecuted = false;
     Lazy.range(-10, 10).join(function (xs) {
@@ -106,6 +119,123 @@ exports['range i,next..j (i>j)'] = function (assert) {
         joinExecuted = true;
         assert.deepEqual(xs, range(4,1,0.1));
         assert.equal(xs.length, 30);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range [i..j] (i<j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('[1..10]').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(1,11));
+        assert.equal(xs.length, 10);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range [i..j] (i>j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('[10..1]').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(10,0));
+        assert.equal(xs.length, 10);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range [i..j) (i<j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('[1..10)').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(1,10));
+        assert.equal(xs.length, 9);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range [i..j) (i>j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('[10..1)').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(10,1));
+        assert.equal(xs.length, 9);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range (i..j] (i<j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('(1..10]').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(2,11));
+        assert.equal(xs.length, 9);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range (i..j] (i>j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('(10..1]').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(9,0));
+        assert.equal(xs.length, 9);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range (i..j) (i<j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('(1..10)').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(2,10));
+        assert.equal(xs.length, 8);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range (i..j) (i>j)'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('(10..1)').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(9,1));
+        assert.equal(xs.length, 8);
+    });
+
+    setTimeout(function () {
+        assert.ok(joinExecuted, 'join didn\'t execute');
+    }, 2000);
+}
+
+exports['range [i,step..j]'] = function (assert) {
+    var joinExecuted = false;
+    Lazy.range('[5,10..50]').join(function (xs) {
+        joinExecuted = true;
+        assert.deepEqual(xs, range(5,51,5));
+        assert.equal(xs.length, 10);
     });
 
     setTimeout(function () {
