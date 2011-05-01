@@ -1,5 +1,6 @@
 var assert = require('assert');
 var Lazy = require('lazy');
+var EventEmitter = require('events').EventEmitter;
 
 exports['buffered lines'] = function () {
     var lazy = Lazy();
@@ -55,4 +56,34 @@ exports['string lines'] = function () {
         lazy.end();
         assert.ok(joined);
     }, 50);
+};
+
+exports.endStream = function () {
+    var to = setTimeout(function () {
+        assert.fail('never finished');
+    }, 5000);
+    
+    var em = new EventEmitter;
+    var i = 0;
+    var lines = [];
+    Lazy(em).lines.forEach(function (line) {
+        i ++;
+        lines.push(line);
+        if (i == 2) {
+            clearTimeout(to);
+            assert.eql(lines, [ 'foo', 'bar' ]);
+        }
+    });
+    
+    setTimeout(function () {
+        em.emit('data', 'fo');
+    }, 100);
+    
+    setTimeout(function () {
+        em.emit('data', 'o\nbar');
+    }, 150);
+    
+    setTimeout(function () {
+        em.emit('end');
+    }, 200);
 };
