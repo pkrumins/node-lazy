@@ -152,6 +152,11 @@ function Lazy (em, opts) {
             lazy.emit(pipeName)
         });
         
+        // flush on end event
+        self.once(endName, function () {
+            if (acc.length) yield(acc);
+        });
+        
         return lazy;
     }
     

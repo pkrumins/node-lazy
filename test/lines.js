@@ -61,7 +61,7 @@ exports['string lines'] = function () {
 exports.endStream = function () {
     var to = setTimeout(function () {
         assert.fail('never finished');
-    }, 5000);
+    }, 2500);
     
     var em = new EventEmitter;
     var i = 0;
@@ -71,7 +71,7 @@ exports.endStream = function () {
         lines.push(line);
         if (i == 2) {
             clearTimeout(to);
-            assert.eql(lines, [ 'foo', 'bar' ]);
+            assert.eql(lines.map(String), [ 'foo', 'bar' ]);
         }
     });
     
