@@ -1,3 +1,4 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 var expresso = expresso;
 
@@ -7,7 +8,7 @@ function range(i, j) {
     return r;
 }
 
-exports['head'] = function (assert) {
+exports['head'] = function () {
     var lazy = new Lazy;
     var data = [];
     var executed = 0;

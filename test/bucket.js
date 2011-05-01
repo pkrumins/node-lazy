@@ -1,6 +1,7 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 
-exports.bucket = function (assert) {
+exports.bucket = function () {
     var joined = false;
     var lazy = new Lazy;
     lazy.bucket('', function splitter (acc, x) {
