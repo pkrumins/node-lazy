@@ -1,6 +1,7 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 
-exports['buffered lines'] = function (assert) {
+exports['buffered lines'] = function () {
     var lazy = Lazy();
     var joined = false;
     lazy.lines
@@ -28,7 +29,7 @@ exports['buffered lines'] = function (assert) {
     }, 50);
 };
 
-exports['string lines'] = function (assert) {
+exports['string lines'] = function () {
     var lazy = Lazy();
     var joined = false;
     lazy.lines

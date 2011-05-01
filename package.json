@@ -21,9 +21,12 @@
             "type": "MIT"
     }, 
     "repository": {
-            "type": "git",
-            "url": "http://github.com/pkrumins/node-lazy.git"
+        "type": "git",
+        "url": "http://github.com/pkrumins/node-lazy.git"
     }, 
+    "devDependencies" : {
+        "express" : ">=0.7.5"
+    },
     "engines": {
         "node": ">=0.2.0"
     }
