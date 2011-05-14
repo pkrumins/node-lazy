@@ -1,3 +1,4 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 var expresso = expresso;
 
@@ -7,7 +8,7 @@ function range(i, j) {
     return r;
 }
 
-exports['custom event names'] = function (assert) {
+exports['custom event names'] = function () {
     var lazy = new Lazy(null, { data : 'meow', pipe : 'all done' });
     var data = [];
     var executed = false;

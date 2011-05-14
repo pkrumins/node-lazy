@@ -1,3 +1,4 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 var EventEmitter = require('events').EventEmitter;
 
@@ -7,7 +8,7 @@ function range(i, j) {
     return r;
 }
 
-exports.pipe = function (assert) {
+exports.pipe = function () {
     var em = new EventEmitter;
     var i = 0;
     var iv = setInterval(function () {

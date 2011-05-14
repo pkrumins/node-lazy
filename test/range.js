@@ -1,3 +1,4 @@
+var assert = require('assert');
 var Lazy = require('lazy');
 var expresso = expresso;
 
@@ -9,7 +10,7 @@ function range(i, j, s) {
     return r;
 }
 
-exports['infinite range'] = function (assert) {
+exports['infinite range'] = function () {
     var joinExecuted = false;
     Lazy.range('10..').take(10).join(function (xs) {
         joinExecuted = true;
@@ -22,7 +23,7 @@ exports['infinite range'] = function (assert) {
     }, 2000);
 }
 
-exports['infinite range half-open'] = function (assert) {
+exports['infinite range half-open'] = function () {
     var joinExecuted = false;
     Lazy.range('(10..').take(10).join(function (xs) {
         joinExecuted = true;
@@ -35,7 +36,7 @@ exports['infinite range half-open'] = function (assert) {
     }, 2000);
 }
 
-exports['range i'] = function (assert) {
+exports['range i'] = function () {
     var joinExecuted = false;
     Lazy.range(10).join(function (xs) {
         joinExecuted = true;
@@ -48,7 +49,7 @@ exports['range i'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,j (i<j)'] = function (assert) {
+exports['range i,j (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range(-10, 10).join(function (xs) {
         joinExecuted = true;
@@ -61,7 +62,7 @@ exports['range i,j (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,j,s (i<j)'] = function (assert) {
+exports['range i,j,s (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range(-10, 10, 2).join(function (xs) {
         joinExecuted = true;
@@ -74,7 +75,7 @@ exports['range i,j,s (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,j,s (i>j)'] = function (assert) {
+exports['range i,j,s (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range(10, 0, 2).join(function (xs) {
         joinExecuted = true;
@@ -87,7 +88,7 @@ exports['range i,j,s (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,j (i>j)'] = function (assert) {
+exports['range i,j (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range(10, -8).join(function (xs) {
         joinExecuted = true;
@@ -100,7 +101,7 @@ exports['range i,j (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i..j (i<j)'] = function (assert) {
+exports['range i..j (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('5..50').join(function (xs) {
         joinExecuted = true;
@@ -113,7 +114,7 @@ exports['range i..j (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i..j (i>j)'] = function (assert) {
+exports['range i..j (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('50..44').join(function (xs) {
         joinExecuted = true;
@@ -126,7 +127,7 @@ exports['range i..j (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,next..j (i<j)'] = function (assert) {
+exports['range i,next..j (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('1,1.1..4').join(function (xs) {
         joinExecuted = true;
@@ -139,7 +140,7 @@ exports['range i,next..j (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range i,next..j (i>j)'] = function (assert) {
+exports['range i,next..j (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('4,3.9..1').join(function (xs) {
         joinExecuted = true;
@@ -152,7 +153,7 @@ exports['range i,next..j (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range [i..j] (i<j)'] = function (assert) {
+exports['range [i..j] (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('[1..10]').join(function (xs) {
         joinExecuted = true;
@@ -165,7 +166,7 @@ exports['range [i..j] (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range [i..j] (i>j)'] = function (assert) {
+exports['range [i..j] (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('[10..1]').join(function (xs) {
         joinExecuted = true;
@@ -178,7 +179,7 @@ exports['range [i..j] (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range [i..j) (i<j)'] = function (assert) {
+exports['range [i..j) (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('[1..10)').join(function (xs) {
         joinExecuted = true;
@@ -191,7 +192,7 @@ exports['range [i..j) (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range [i..j) (i>j)'] = function (assert) {
+exports['range [i..j) (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('[10..1)').join(function (xs) {
         joinExecuted = true;
@@ -204,7 +205,7 @@ exports['range [i..j) (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range (i..j] (i<j)'] = function (assert) {
+exports['range (i..j] (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('(1..10]').join(function (xs) {
         joinExecuted = true;
@@ -217,7 +218,7 @@ exports['range (i..j] (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range (i..j] (i>j)'] = function (assert) {
+exports['range (i..j] (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('(10..1]').join(function (xs) {
         joinExecuted = true;
@@ -230,7 +231,7 @@ exports['range (i..j] (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range (i..j) (i<j)'] = function (assert) {
+exports['range (i..j) (i<j)'] = function () {
     var joinExecuted = false;
     Lazy.range('(1..10)').join(function (xs) {
         joinExecuted = true;
@@ -243,7 +244,7 @@ exports['range (i..j) (i<j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range (i..j) (i>j)'] = function (assert) {
+exports['range (i..j) (i>j)'] = function () {
     var joinExecuted = false;
     Lazy.range('(10..1)').join(function (xs) {
         joinExecuted = true;
@@ -256,7 +257,7 @@ exports['range (i..j) (i>j)'] = function (assert) {
     }, 2000);
 }
 
-exports['range [i,step..j]'] = function (assert) {
+exports['range [i,step..j]'] = function () {
     var joinExecuted = false;
     Lazy.range('[5,10..50]').join(function (xs) {
         joinExecuted = true;
