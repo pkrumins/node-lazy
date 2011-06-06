@@ -3,9 +3,6 @@
     "version": "1.0.5",
     "description": "Lazy lists for node",
     "main": "./lazy.js",
-    "modules" : {
-        "index" : "./lazy.js"
-    },
     "keywords": [
         "lazy"
     ],
