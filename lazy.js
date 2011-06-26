@@ -90,6 +90,13 @@ function Lazy (em, opts) {
         });
     }
 
+    self.skip = function (n) {
+        return newLazy(function () {
+            if (n-- == 0) return true;
+            return false;
+        });
+    }
+
     self.take = function (n) {
         return newLazy(function () {
             if (n == 0) self.emit(pipeName);
