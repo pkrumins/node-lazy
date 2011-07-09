@@ -101,6 +101,41 @@ the code became:
 
 This is so much nicer!
 
+Here is the latest feature: .lines. Given a stream of data that has \n's in it,
+.lines converts that into a list of lines.
+
+Here is an example from node-iptables that I wrote the other week,
+
+    var spawn = require('child_process').spawn;
+    var iptables = spawn('iptables', ['-L', '-n', '-v']);
+
+    lazy(iptables.stdout)
+        .lines
+        .map(String)
+        .skip(2) // skips the two lines that are iptables header
+        .map(function (line) {
+            // packets, bytes, target, pro, opt, in, out, src, dst, opts
+            var fields = line.trim().split(/\s+/, 9);
+            return {
+                parsed : {
+                    packets : fields[0],
+                    bytes : fields[1],
+                    target : fields[2],
+                    protocol : fields[3],
+                    opt : fields[4],
+                    in : fields[5],
+                    out : fields[6],
+                    src : fields[7],
+                    dst : fields[8]
+                },
+                raw : line.trim()
+            };
+        });
+
+This example takes the `iptables -L -n -v` command and uses .lines on its output.
+Then it .skip's two lines from input and maps a function on all other lines that
+creates a data structure from the output.
+
 
 [2]-Documentation-------------------------------------------------------------
 
@@ -113,6 +148,32 @@ Supports the following operations:
     * lazy.takeWhile(f)
     * lazy.bucket(init, f)
     * lazy.lines
+
+The Lazy object itself has a .range property for generating all the possible ranges.
+
+Here are several examples:
+
+    * Lazy.range('10..') - infinite range starting from 10
+    * Lazy.range('(10..') - infinite range starting from 11
+    * Lazy.range(10) - range from 0 to 9
+    * Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
+    * Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
+    * Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
+    * Lazy.range(10, 0) - reverse range from 10 to 1
+    * Lazy.range('5..50') - range from 5 to 49
+    * Lazy.range('50..44') - range from 50 to 45
+    * Lazy.range('1,1.1..4') - range from 1 to 4 with increment of 0.1 (1, 1.1, 1.2, ... 3.9)
+    * Lazy.range('4,3.9..1') - reverse range from 4 to 1 with decerement of 0.1
+    * Lazy.range('[1..10]') - range from 1 to 10 (all inclusive)
+    * Lazy.range('[10..1]') - range from 10 to 1 (all inclusive)
+    * Lazy.range('[1..10)') - range grom 1 to 9
+    * Lazy.range('[10..1)') - range from 10 to 2
+    * Lazy.range('(1..10]') - range from 2 to 10
+    * Lazy.range('(10..1]') - range from 9 to 1
+    * Lazy.range('(1..10)') - range from 2 to 9
+    * Lazy.range('[5,10..50]') - range from 5 to 50 with a step of 5 (all inclusive)
+
+Then you can use other lazy functions on these ranges.
 
 ------------------------------------------------------------------------------
 
