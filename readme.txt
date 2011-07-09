@@ -148,6 +148,13 @@ Supports the following operations:
     * lazy.takeWhile(f)
     * lazy.bucket(init, f)
     * lazy.lines
+    * lazy.sum(f)
+    * lazy.product(f)
+    * lazy.foldr(op, i, f)
+    * lazy.skip(n)
+    * lazy.head(f)
+    * lazy.tail(f)
+    * lazy.join(f)
 
 The Lazy object itself has a .range property for generating all the possible ranges.
 
