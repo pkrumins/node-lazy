@@ -106,10 +106,11 @@ Here is the latest feature: .lines. Given a stream of data that has \n's in it,
 
 Here is an example from node-iptables that I wrote the other week,
 
+    var Lazy = require('lazy');
     var spawn = require('child_process').spawn;
     var iptables = spawn('iptables', ['-L', '-n', '-v']);
 
-    lazy(iptables.stdout)
+    Lazy(iptables.stdout)
         .lines
         .map(String)
         .skip(2) // skips the two lines that are iptables header
