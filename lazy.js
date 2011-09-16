@@ -92,8 +92,11 @@ function Lazy (em, opts) {
 
     self.skip = function (n) {
         return newLazy(function () {
-            if (n-- == 0) return true;
-            return false;
+            if (n > 0) {
+                n--;
+                return false;
+            }
+            return true;
         });
     }
 
