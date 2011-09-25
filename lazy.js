@@ -164,7 +164,8 @@ function Lazy (em, opts) {
         
         // flush on end event
         self.once(endName, function () {
-            if (acc.length) yield(acc);
+          var finalBuffer = mergeBuffers(acc);
+          if(finalBuffer) yield(finalBuffer);
         });
         
         return lazy;
@@ -172,23 +173,29 @@ function Lazy (em, opts) {
     
     // Streams that use this should emit strings or buffers only
     self.__defineGetter__('lines', function () {
-        return self.bucket(new Buffer(0), function (acc, x) {
-            if (typeof x == 'string') x = new Buffer(x);
+        return self.bucket([], function (chunkArray, chunk) {
+            var newline = '\n'.charCodeAt(0), lastNewLineIndex = 0;
+            if (typeof chunk === 'string') chunk = new Buffer(chunk);
             
-            var accx = new Buffer(acc.length + x.length);
-            acc.copy(accx, 0);
-            x.copy(accx, acc.length);
-            
-            var newline = '\n'.charCodeAt(0);
-            var j = 0;
-            for (var i = 0; i < accx.length; i++) {
-                if (accx[i] == newline) {
-                    this(accx.slice(j, i));
-                    j = i + 1;
-                }
+            for (var i = 0; i < chunk.length; i++) {
+              if (chunk[i] === newline) {
+                // If we have content from the current chunk to append to our buffers, do it.
+                if(i>0) chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                
+                // Wrap all our buffers and emit it.
+                this(mergeBuffers(chunkArray));
+                lastNewLineIndex = i + 1;
+              }
             }
             
-            return accx.slice(j, accx.length);
+            if(lastNewLineIndex>0) { 
+              // New line found in the chunk, push the remaining part of the buffer.
+              if(lastNewLineIndex < chunk.length) chunkArray.push(chunk.slice(lastNewLineIndex));
+            } else {
+              // No new line found, push the whole buffer.
+              if(chunk.length) chunkArray.push(chunk);
+            }
+            return chunkArray;
         });
     });
 }
@@ -281,3 +288,20 @@ Lazy.range = function () {
     return lazy;
 }
 
+var mergeBuffers = function mergeBuffers(buffers) {
+  // We expect buffers to be a non-empty Array
+  if (!buffers || !Array.isArray(buffers) || !buffers.length) return;
+  
+  var finalBufferLength, finalBuffer, currentBuffer, currentSize = 0;
+  
+  // Sum all the buffers lengths
+  finalBufferLength = buffers.reduce(function(left, right) { return (left.length||left) + (right.length||right); }, 0);
+  finalBuffer = new Buffer(finalBufferLength);
+  while(buffers.length) {
+    currentBuffer = buffers.shift();
+    currentBuffer.copy(finalBuffer, currentSize);
+    currentSize += currentBuffer.length;
+  }
+  
+  return finalBuffer;
+}
