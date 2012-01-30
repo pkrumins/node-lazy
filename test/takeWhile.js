@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Lazy = require('lazy');
+var Lazy = require('..');
 var expresso = expresso;
 
 function range(i, j) {
