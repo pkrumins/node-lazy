@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Lazy = require('lazy');
+var Lazy = require('..');
 var EventEmitter = require('events').EventEmitter;
 
 function range(i, j) {

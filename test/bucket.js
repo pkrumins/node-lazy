@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Lazy = require('lazy');
+var Lazy = require('..');
 
 exports.bucket = function () {
     var joined = false;
