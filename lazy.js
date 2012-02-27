@@ -48,6 +48,9 @@ function Lazy (em, opts) {
         self.once(pipeName, function () {
             lazy.emit(pipeName)
         });
+        self.once(endName, function () {
+            lazy.emit(endName)
+        });
         return lazy;
     }
 
@@ -164,8 +167,9 @@ function Lazy (em, opts) {
         
         // flush on end event
         self.once(endName, function () {
-          var finalBuffer = mergeBuffers(acc);
-          if(finalBuffer) yield(finalBuffer);
+            var finalBuffer = mergeBuffers(acc);
+            if(finalBuffer) yield(finalBuffer);
+            lazy.emit(endName)
         });
         
         return lazy;
