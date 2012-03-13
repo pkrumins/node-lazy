@@ -184,7 +184,11 @@ function Lazy (em, opts) {
             for (var i = 0; i < chunk.length; i++) {
               if (chunk[i] === newline) {
                 // If we have content from the current chunk to append to our buffers, do it.
-                if(i>0) chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                if(i>0){
+                  if(i === lastNewLineIndex){
+                    lastNewLineIndex = i-1;
+                  }
+                } chunkArray.push(chunk.slice(lastNewLineIndex, i));
                 
                 // Wrap all our buffers and emit it.
                 this(mergeBuffers(chunkArray));
