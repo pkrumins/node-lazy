@@ -188,7 +188,8 @@ function Lazy (em, opts) {
                   if(i === lastNewLineIndex){
                     lastNewLineIndex = i-1;
                   }
-                } chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                  chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                } 
                 
                 // Wrap all our buffers and emit it.
                 this(mergeBuffers(chunkArray));
