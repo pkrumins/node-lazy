@@ -178,11 +178,12 @@ function Lazy (em, opts) {
     // Streams that use this should emit strings or buffers only
     self.__defineGetter__('lines', function () {
         return self.bucket([], function (chunkArray, chunk) {
-            var newline = '\n'.charCodeAt(0), lastNewLineIndex = 0;
+            var newline = ['\r'.charCodeAt(0), '\n'.charCodeAt(0)], lastNewLineIndex = 0;
             if (typeof chunk === 'string') chunk = new Buffer(chunk);
             
             for (var i = 0; i < chunk.length; i++) {
-              if (chunk[i] === newline) {
+              // Match line separator characters
+              if (newline.indexOf(chunk[i]) !== -1) {
                 // If we have content from the current chunk to append to our buffers, do it.
                 if(i>0){
                   if(i === lastNewLineIndex){
@@ -191,8 +192,14 @@ function Lazy (em, opts) {
                   chunkArray.push(chunk.slice(lastNewLineIndex, i));
                 } 
                 
+                // Skip second separator byte on \r\n terminated lines ( yeah, stupid DOS / Windows, I know... )
+                if ((i + 1 < chunk.length) && (chunk[i] === newline[0]) && (chunk[i + 1] === newline[1])) {
+                  i++;
+                }
+
                 // Wrap all our buffers and emit it.
                 this(mergeBuffers(chunkArray));
+
                 lastNewLineIndex = i + 1;
               }
             }
