@@ -211,6 +211,10 @@ function Lazy (em, opts) {
               // No new line found, push the whole buffer.
               if(chunk.length) chunkArray.push(chunk);
             }
+            
+            // Emit the last line of data
+            this(mergedBuffers(chunkArray));
+            
             return chunkArray;
         });
     });
