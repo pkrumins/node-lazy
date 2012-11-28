@@ -151,14 +151,14 @@ function Lazy (em, opts) {
  
     self.bucket = function (init, f) {
         var lazy = new Lazy(null, opts);
-        var yield = function (x) {
+        var emitData = function (x) {
             lazy.emit(dataName, x);
         };
         
         var acc = init;
         
         self.on(dataName, function (x) {
-            acc = f.call(yield, acc, x);
+            acc = f.call(emitData, acc, x);
         });
         
         self.once(pipeName, function () {
@@ -168,7 +168,7 @@ function Lazy (em, opts) {
         // flush on end event
         self.once(endName, function () {
             var finalBuffer = mergeBuffers(acc);
-            if(finalBuffer) yield(finalBuffer);
+            if(finalBuffer) emitData(finalBuffer);
             lazy.emit(endName)
         });
         
