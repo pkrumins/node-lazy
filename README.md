@@ -7,8 +7,9 @@ His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
 # Table of contents:
 
-  [Introduction](#Introduction)
-  [Documentation](#Documentation)
+[Introduction](#Introduction)
+  
+[Documentation](#Documentation)
 
 <a name="Introduction" />
 # Introduction
