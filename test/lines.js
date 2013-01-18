@@ -87,3 +87,29 @@ exports.endStream = function () {
         em.emit('end');
     }, 200);
 };
+
+exports.emptyLines = function () {
+    var lineNumber = 0;
+    var em = new EventEmitter;
+    var lazy = Lazy(em);
+    lazy.lines
+      .map(String)
+      .forEach(function (line) {
+          switch(lineNumber) {
+          case 0:
+            assert.eql(line, 'line1');
+            break;
+          case 1:
+          case 2:
+            assert.eql(line, '');
+            assert.eql(line, '');
+            break;
+          case 3:
+            assert.eql(line, 'line4');
+            break;
+          }
+          lineNumber ++;
+      });
+    em.emit('data', 'line1\n\n\r\nline4');
+    em.emit('end');
+};
