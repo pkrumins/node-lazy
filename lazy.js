@@ -189,7 +189,11 @@ function Lazy (em, opts) {
                   if(i === lastNewLineIndex){
                     lastNewLineIndex = i-1;
                   }
-                  chunkArray.push(chunk.slice(lastNewLineIndex, i));
+
+                  // If the line is empty then the only item will be a new line
+                  if(i - lastNewLineIndex !== 1 || newline.indexOf(chunk[lastNewLineIndex]) === -1) {
+                    chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                  }
                 } 
                 
                 // Skip second separator byte on \r\n terminated lines ( yeah, stupid DOS / Windows, I know... )
@@ -306,7 +310,7 @@ Lazy.range = function () {
 
 var mergeBuffers = function mergeBuffers(buffers) {
   // We expect buffers to be a non-empty Array
-  if (!buffers || !Array.isArray(buffers) || !buffers.length) return;
+  if (!buffers || !Array.isArray(buffers) || !buffers.length) return new Buffer(0);
   
   var finalBufferLength, finalBuffer, currentBuffer, currentSize = 0;
   
