@@ -75,11 +75,7 @@ function Lazy (em, opts) {
     }
 
     self.head = function (f) {
-        var lazy = newLazy();
-        lazy.on(dataName, function g (x) {
-            f(x)
-            lazy.removeListener(dataName, g)
-        })
+        self.once(dataName, f);
     }
 
     self.tail = function () {

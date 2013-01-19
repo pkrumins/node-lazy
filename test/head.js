@@ -2,25 +2,33 @@ var assert = require('assert');
 var Lazy = require('..');
 var expresso = expresso;
 
-function range(i, j) {
-    var r = [];
-    for (;i<j;i++) r.push(i);
-    return r;
-}
-
 exports['head'] = function () {
     var lazy = new Lazy;
-    var data = [];
     var executed = 0;
-    lazy.head(function (x) {
-        assert.equal(x, 0);
-        executed++;
-    })
+    var expect = function(n) {
+        return function(x) {
+            executed++;
+            assert.eql(x, n);
+        }
+    }
 
-    range(0,10).forEach(function (x) {
+    // callback should only execute once.
+    lazy.head(expect(12));
+    [12, 13, 14].forEach(function (x) {
         lazy.emit('data', x);
     });
+    assert.equal(executed, 1);
 
-    assert.equal(executed, 1, 'head executed too much');
+    // multiple calls to head leave the lazy list unchanged.
+    lazy.head(expect(123));
+    lazy.head(expect(123));
+    lazy.head(expect(123));
+    lazy.join(expect([123, 456, 789]));
+    [123, 456, 789].forEach(function(x) {
+        lazy.emit('data', x);
+    })
+    assert.equal(executed, 4);
+    lazy.emit('end');
+    assert.equal(executed, 5);
 }
 
