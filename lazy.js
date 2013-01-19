@@ -74,6 +74,11 @@ function Lazy (em, opts) {
         );
     }
 
+    self.pop = function (f) {
+        self.head(f);
+        return self.skip(1);
+    }
+
     self.head = function (f) {
         self.once(dataName, f);
     }

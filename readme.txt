@@ -153,6 +153,7 @@ Supports the following operations:
     * lazy.product(f)
     * lazy.foldr(op, i, f)
     * lazy.skip(n)
+    * lazy.pop(f)
     * lazy.head(f)
     * lazy.tail(f)
     * lazy.join(f)
