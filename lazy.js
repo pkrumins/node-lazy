@@ -174,45 +174,75 @@ function Lazy (em, opts) {
         
         return lazy;
     }
-    
-    // Streams that use this should emit strings or buffers only
-    self.__defineGetter__('lines', function () {
+
+    // Streams that use this should emit strings or buffers only.
+    // Delimits a stream based on a set of delimiting characters.
+    self.delimit = function (delimiterChars) {
+
+        var delimiters = [];
+        var delimitersLen = delimiterChars.length;
+        for (var i = 0; i < delimitersLen; i++) {
+            delimiters.push( delimiterChars.charCodeAt(i) );
+        }
+
         return self.bucket([], function (chunkArray, chunk) {
-            var newline = ['\r'.charCodeAt(0), '\n'.charCodeAt(0)], lastNewLineIndex = 0;
-            if (typeof chunk === 'string') chunk = new Buffer(chunk);
-            
-            for (var i = 0; i < chunk.length; i++) {
-              // Match line separator characters
-              if (newline.indexOf(chunk[i]) !== -1) {
-                // If we have content from the current chunk to append to our buffers, do it.
-                if(i>0){
-                  if(i === lastNewLineIndex){
-                    lastNewLineIndex = i-1;
-                  }
-                  chunkArray.push(chunk.slice(lastNewLineIndex, i));
-                } 
-                
-                // Skip second separator byte on \r\n terminated lines ( yeah, stupid DOS / Windows, I know... )
-                if ((i + 1 < chunk.length) && (chunk[i] === newline[0]) && (chunk[i + 1] === newline[1])) {
-                  i++;
+
+            if (typeof chunk === 'string') {
+                chunk = new Buffer(chunk);
+            }
+
+            var chunkLen = chunk.length;
+            var split = 0;
+
+            // Iterate over the chunk.
+            for (var i = 0; i < chunkLen; i++) {
+
+                // Check to see if one of the delimiting characters matches.
+                for (var j = 0; j < delimitersLen; j++) {
+                    if (chunk[i] === delimiters[j]) {
+
+                        // If we have content to append to the buffer, do it.
+                        if (i > 0) {
+                            if (split !== i) {
+                                chunkArray.push(chunk.slice(split, i));
+                                // Wrap all our buffers and emit it.
+                                this(mergeBuffers(chunkArray));
+                            }
+                        }
+                        // If this is the start of a new chunk, emit any previous ones.
+                        else {
+                            this(mergeBuffers(chunkArray));
+                        }
+
+                        // Move the split forward to the next index.
+                        split = i + 1;
+
+                        // Done checking delimiting characters.
+                        break;
+                    }
                 }
-
-                // Wrap all our buffers and emit it.
-                this(mergeBuffers(chunkArray));
-
-                lastNewLineIndex = i + 1;
-              }
             }
-            
-            if(lastNewLineIndex>0) { 
-              // New line found in the chunk, push the remaining part of the buffer.
-              if(lastNewLineIndex < chunk.length) chunkArray.push(chunk.slice(lastNewLineIndex));
-            } else {
-              // No new line found, push the whole buffer.
-              if(chunk.length) chunkArray.push(chunk);
+
+            if (split > 0) {
+                // Delimiters found in the chunk, push the remaining part of the buffer.
+                if (split < chunkLen) {
+                    chunkArray.push(chunk.slice(split));
+                }
             }
+            else {
+                // No delimiters found, push the whole buffer.
+                if (chunkLen) {
+                    chunkArray.push(chunk);
+                }
+            }
+
             return chunkArray;
         });
+    }
+
+    // Streams that use this should emit strings or buffers only
+    self.__defineGetter__('lines', function () {
+        return self.delimit('\r\n');
     });
 }
 
