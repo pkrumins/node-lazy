@@ -1,9 +1,6 @@
-This is lazy lists for node.js.
+Lazy lists for node
+===================
 
-It was written by Peteris Krumins (peter@catonmat.net).
-His blog is at http://www.catonmat.net  --  good coders code, great reuse.
-
-------------------------------------------------------------------------------
 
 # Table of contents:
 
@@ -13,7 +10,7 @@ His blog is at http://www.catonmat.net  --  good coders code, great reuse.
 
 <a name="Introduction" />
 # Introduction
-It comes really handy when you need to treat a stream of events like a list.
+Lazy comes really handy when you need to treat a stream of events like a list.
 The best use case currently is returning a lazy list from an asynchronous
 function, and having data pumped into it via events. In asynchronous
 programming you can't just return a regular list because you don't yet have
