@@ -97,7 +97,7 @@ the code became:
       .join(function (xs) {
         // xs contains the first 5 users who are over 20!
       });
-``
+```
 This is so much nicer!
 
 Here is the latest feature: .lines. Given a stream of data that has \n's in it,
