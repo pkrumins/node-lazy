@@ -182,12 +182,4 @@ Here are several examples:
 
 Then you can use other lazy functions on these ranges.
 
-------------------------------------------------------------------------------
-
-Have fun being lazy!
-
-
-Sincerely,
-Peteris Krumins
-http://www.catonmat.net
 
