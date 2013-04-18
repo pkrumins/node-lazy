@@ -18,7 +18,7 @@ function Lazy(em, opts) {
     if (!opts) opts = {};
     var dataName = opts.data || 'data';
     var pipeName = opts.pipe || 'pipe';
-    var endName = opts.pipe || 'end';
+    var endName = opts.end || 'end';
     
     if (pipeName != endName) {
         var piped = false;
