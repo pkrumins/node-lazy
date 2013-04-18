@@ -1,19 +1,16 @@
-This is lazy lists for node.js.
-
-It was written by Peteris Krumins (peter@catonmat.net).
-His blog is at http://www.catonmat.net  --  good coders code, great reuse.
-
-------------------------------------------------------------------------------
-
-Table of contents:
-
-  [1]: Introduction
-  [2]: Documentation
+Lazy lists for node
+===================
 
 
-[1]-Introduction--------------------------------------------------------------
+# Table of contents:
 
-It comes really handy when you need to treat a stream of events like a list.
+[Introduction](#Introduction)
+  
+[Documentation](#Documentation)
+
+<a name="Introduction" />
+# Introduction
+Lazy comes really handy when you need to treat a stream of events like a list.
 The best use case currently is returning a lazy list from an asynchronous
 function, and having data pumped into it via events. In asynchronous
 programming you can't just return a regular list because you don't yet have
@@ -24,7 +21,7 @@ chaining functions and creating pipes, which leads to not that nice interfaces.
 modules.)
 
 Check out this toy example, first you create a Lazy object:
-
+```javascript
     var Lazy = require('lazy');
 
     var lazy = new Lazy;
@@ -39,16 +36,18 @@ Check out this toy example, first you create a Lazy object:
       .join(function (xs) {
         console.log(xs);
       });
+```
 
 This code says that 'lazy' is going to be a lazy list that filters even
 numbers, takes first five of them, then multiplies all of them by 2, and then
 calls the join function (think of join as in threads) on the final list.
 
 And now you can emit 'data' events with data in them at some point later,
-
+```javascript
     [0,1,2,3,4,5,6,7,8,9,10].forEach(function (x) {
       lazy.emit('data', x);
     });
+```
 
 The output will be produced by the 'join' function, which will output the
 expected [0, 4, 8, 12, 16].
@@ -58,7 +57,7 @@ node.js called node-supermarket (think of key-value store except greater). Now
 it had a similar interface as a list, you could .forEach on the stored
 elements, .filter them, etc. But being asynchronous in nature it lead to the
 following code, littered with callbacks and temporary lists:
-
+```javascript
     var Store = require('supermarket');
 
     var db = new Store({ filename : 'users.db', json : true });
@@ -80,13 +79,13 @@ following code, littered with callbacks and temporary lists:
         // now do something with users_over_20
       }
     )
-
+```
 This code selects first five users who are over 20 years old and stores them
 in users_over_20.
 
 But now we changed the node-supermarket interface to return lazy lists, and
 the code became:
-
+```javascript
     var Store = require('supermarket');
 
     var db = new Store({ filename : 'users.db', json : true });
@@ -98,14 +97,14 @@ the code became:
       .join(function (xs) {
         // xs contains the first 5 users who are over 20!
       });
-
+```
 This is so much nicer!
 
 Here is the latest feature: .lines. Given a stream of data that has \n's in it,
 .lines converts that into a list of lines.
 
 Here is an example from node-iptables that I wrote the other week,
-
+```javascript
     var Lazy = require('lazy');
     var spawn = require('child_process').spawn;
     var iptables = spawn('iptables', ['-L', '-n', '-v']);
@@ -132,63 +131,55 @@ Here is an example from node-iptables that I wrote the other week,
                 raw : line.trim()
             };
         });
-
+```
 This example takes the `iptables -L -n -v` command and uses .lines on its output.
 Then it .skip's two lines from input and maps a function on all other lines that
 creates a data structure from the output.
 
-
-[2]-Documentation-------------------------------------------------------------
+<a name="Documentation" />
+# Documentation
 
 Supports the following operations:
 
-    * lazy.filter(f)
-    * lazy.forEach(f)
-    * lazy.map(f)
-    * lazy.take(n)
-    * lazy.takeWhile(f)
-    * lazy.bucket(init, f)
-    * lazy.lines
-    * lazy.sum(f)
-    * lazy.product(f)
-    * lazy.foldr(op, i, f)
-    * lazy.skip(n)
-    * lazy.head(f)
-    * lazy.tail(f)
-    * lazy.join(f)
+* lazy.filter(f)
+* lazy.forEach(f)
+* lazy.map(f)
+* lazy.take(n)
+* lazy.takeWhile(f)
+* lazy.bucket(init, f)
+* lazy.lines
+* lazy.sum(f)
+* lazy.product(f)
+* lazy.foldr(op, i, f)
+* lazy.skip(n)
+* lazy.head(f)
+* lazy.tail(f)
+* lazy.join(f)
 
 The Lazy object itself has a .range property for generating all the possible ranges.
 
 Here are several examples:
 
-    * Lazy.range('10..') - infinite range starting from 10
-    * Lazy.range('(10..') - infinite range starting from 11
-    * Lazy.range(10) - range from 0 to 9
-    * Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
-    * Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
-    * Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
-    * Lazy.range(10, 0) - reverse range from 10 to 1
-    * Lazy.range('5..50') - range from 5 to 49
-    * Lazy.range('50..44') - range from 50 to 45
-    * Lazy.range('1,1.1..4') - range from 1 to 4 with increment of 0.1 (1, 1.1, 1.2, ... 3.9)
-    * Lazy.range('4,3.9..1') - reverse range from 4 to 1 with decerement of 0.1
-    * Lazy.range('[1..10]') - range from 1 to 10 (all inclusive)
-    * Lazy.range('[10..1]') - range from 10 to 1 (all inclusive)
-    * Lazy.range('[1..10)') - range grom 1 to 9
-    * Lazy.range('[10..1)') - range from 10 to 2
-    * Lazy.range('(1..10]') - range from 2 to 10
-    * Lazy.range('(10..1]') - range from 9 to 1
-    * Lazy.range('(1..10)') - range from 2 to 9
-    * Lazy.range('[5,10..50]') - range from 5 to 50 with a step of 5 (all inclusive)
+* Lazy.range('10..') - infinite range starting from 10
+* Lazy.range('(10..') - infinite range starting from 11
+* Lazy.range(10) - range from 0 to 9
+* Lazy.range(-10, 10) - range from -10 to 9 (-10, -9, ... 0, 1, ... 9)
+* Lazy.range(-10, 10, 2) - range from -10 to 8, skipping every 2nd element (-10, -8, ... 0, 2, 4, 6, 8)
+* Lazy.range(10, 0, 2) - reverse range from 10 to 1, skipping every 2nd element (10, 8, 6, 4, 2)
+* Lazy.range(10, 0) - reverse range from 10 to 1
+* Lazy.range('5..50') - range from 5 to 49
+* Lazy.range('50..44') - range from 50 to 45
+* Lazy.range('1,1.1..4') - range from 1 to 4 with increment of 0.1 (1, 1.1, 1.2, ... 3.9)
+* Lazy.range('4,3.9..1') - reverse range from 4 to 1 with decerement of 0.1
+* Lazy.range('[1..10]') - range from 1 to 10 (all inclusive)
+* Lazy.range('[10..1]') - range from 10 to 1 (all inclusive)
+* Lazy.range('[1..10)') - range grom 1 to 9
+* Lazy.range('[10..1)') - range from 10 to 2
+* Lazy.range('(1..10]') - range from 2 to 10
+* Lazy.range('(10..1]') - range from 9 to 1
+* Lazy.range('(1..10)') - range from 2 to 9
+* Lazy.range('[5,10..50]') - range from 5 to 50 with a step of 5 (all inclusive)
 
 Then you can use other lazy functions on these ranges.
 
-------------------------------------------------------------------------------
-
-Have fun being lazy!
-
-
-Sincerely,
-Peteris Krumins
-http://www.catonmat.net
 
