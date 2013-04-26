@@ -1,6 +1,6 @@
 {
     "name": "lazy",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "Lazy lists for node",
     "main": "./lazy.js",
     "keywords": [
