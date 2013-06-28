@@ -43,18 +43,9 @@ function Lazy(em, opts) {
         self.on(pipeName, function () {
             em.emit(pipeName);
         });
-        // Check for v0.10 or Greater (Stream2 has Duplex type)
-        if (stream.Duplex && em instanceof(stream)) {
-            em.on('readable', function () {
-                var x = em.read();
-                self.emit(dataName, x);
-            });
-        } else {
-            // Old Stream1 or Event support
-            em.on(dataName, function (x) {
-                self.emit(dataName, x);
-            });
-        }
+        em.on(dataName, function (x) {
+            self.emit(dataName, x);
+        });
     }
 
     function newLazy (g, h, l) {
