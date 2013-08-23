@@ -333,7 +333,7 @@ var mergeBuffers = function mergeBuffers(buffers) {
   var finalBufferLength, finalBuffer, currentBuffer, currentSize = 0;
 
   // Sum all the buffers lengths
-  finalBufferLength = buffers.reduce(function(left, right) { return (left.length||left) + (right.length||right); }, 0);
+  finalBufferLength = buffers.reduce(function(left, right) { return left + right.length; }, 0);
   finalBuffer = new Buffer(finalBufferLength);
   while(buffers.length) {
     currentBuffer = buffers.shift();
