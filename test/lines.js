@@ -87,3 +87,11 @@ exports.endStream = function () {
         em.emit('end');
     }, 200);
 };
+
+exports.blankLine = function () {
+	var data = 'abc\n\ndef\n';
+	var l = Lazy();
+	l.lines.join(function (x) { assert.eql(x.join('\n') + '\n', data); });
+	l.emit('data', data);
+	l.emit('end');
+};
