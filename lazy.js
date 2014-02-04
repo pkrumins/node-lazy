@@ -233,6 +233,10 @@ function Lazy(em, opts) {
                     chunkArray.push(chunk);
                 }
             }
+            
+            // Emit the last line of data
+            this(mergedBuffers(chunkArray));
+            
             return chunkArray;
         });
     });
