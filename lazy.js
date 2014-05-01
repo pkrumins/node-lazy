@@ -207,20 +207,20 @@ function Lazy(em, opts) {
         return self.bucket([], function (chunkArray, chunk) {
             var newline = '\n'.charCodeAt(0), lastNewLineIndex = 0;
             if (typeof chunk === 'string') chunk = new Buffer(chunk);
-        if (chunk){
-            	for (var i = 0; i < chunk.length; i++) {
-                	if (chunk[i] === newline) {
-                    	// If we have content from the current chunk to append to our buffers, do it.
-                    		if (i > 0) {
-                        		chunkArray.push(chunk.slice(lastNewLineIndex, i));
-                    		}
+            if (chunk) {
+                for (var i = 0; i < chunk.length; i++) {
+                    if (chunk[i] === newline) {
+                        // If we have content from the current chunk to append to our buffers, do it.
+                        if (i > 0) {
+                            chunkArray.push(chunk.slice(lastNewLineIndex, i));
+                        }
 
-                    		// Wrap all our buffers and emit it.
-                    		this(mergeBuffers(chunkArray));
-                    		lastNewLineIndex = i + 1;
-                	}
+                        // Wrap all our buffers and emit it.
+                        this(mergeBuffers(chunkArray));
+                        lastNewLineIndex = i + 1;
+                    }
+                }
             }
-	    }
 
             if (lastNewLineIndex > 0) {
                 // New line found in the chunk, push the remaining part of the buffer.
