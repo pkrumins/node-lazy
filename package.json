@@ -12,9 +12,7 @@
         "web": "http://www.catonmat.net",
         "twitter": "pkrumins"
     }, 
-    "license": {
-            "type": "MIT"
-    }, 
+    "license": "MIT", 
     "repository": {
         "type": "git",
         "url": "http://github.com/pkrumins/node-lazy.git"
